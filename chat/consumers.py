@@ -18,7 +18,6 @@ import html
 import time
 from django.urls import reverse
 
-
 """ この行をコメントアウトすれば、ロガーリストが見れます
 for logger_name in logging.root.manager.loggerDict:
     print(logger_name)
@@ -27,7 +26,6 @@ exit()
 
 logger = logging.getLogger(__name__)
 logging.getLogger("daphne.ws_protocol").setLevel(logging.ERROR)
-
 
 GLOBAL_LOBBY, result = ChatRoom.objects.get_or_create(name='__system_lobby')
 GLOBAL_LOBBY_ID = GLOBAL_LOBBY.id
@@ -64,7 +62,6 @@ class SendMethodMixin():
             **kwargs
         })
 
-
     # 過去のメッセージを取得してクライアントに送信
     async def send_previous_messages(self, room, message_limit = 50, time = None):
         previous_messages = await get_previous_messages(room, message_limit, time)
@@ -99,7 +96,6 @@ class SendMethodMixin():
                 thumbnail_url = thumbnail,
             )
 
-
 class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
 
     users = set()
@@ -131,7 +127,6 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
             self.last_active_time = time.time()
             self.check_timeout_task = asyncio.create_task(self.check_timeout())
 
-            logger.info('befor_send_message_for_group')
             await self.send_message_to_group(
                 'join',   
                 name = self.user.account_id, #入室者名
@@ -142,7 +137,6 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
 
         else:
             self.close()
-
 
     async def disconnect(self, close_code):
         
@@ -213,7 +207,6 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
 
                 await self.room_list_update(client_message_type)
 
-
             case 'user-list-update':
 
                 await user_list_update(self, GLOBAL_LOBBY_ID, client_message_type)
@@ -269,7 +262,6 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
 
             logger.info(f"{self.user}がROOM{self.room_id}に接続しました")
 
-
             RoomConsumer.users.add(self)
             RoomConsumer.serchsocket[self.user.account_id] = self
 
@@ -286,8 +278,7 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
                 self.channel_name
             )
             await self.accept()
-
-            await self.send_message('your_account_id', account_id = self.user.account_id)
+            await self.send_message('your_account_id', account_id = self.user.account_id, is_server = True)
             await self.send_message_to_group(
                 'join',   
                 name = self.user.account_id, #入室者名
@@ -299,7 +290,6 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
 
         else:
             self.close()
-
 
     async def disconnect(self, close_code):
         print('DISCONNECT!!!!')
@@ -420,8 +410,6 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
             print(f"Error: Socket for account {text_data['for']} not found.")
         
 
-#######################################################################################
-
 async def manage_user_in_chatroom(self, room_id, action):
 
     @database_sync_to_async
@@ -485,7 +473,6 @@ async def user_list_update(socket, room_id, message_type):
         message_type,
         userlist = user_list_ids
     )
-
 
 @database_sync_to_async
 def save_message(room, user, content):

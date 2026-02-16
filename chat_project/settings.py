@@ -141,7 +141,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 ASGI_APPLICATION = 'chat_project.asgi.application'
-
+###　Redisを使用する場合の設定
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -151,6 +151,12 @@ CHANNEL_LAYERS = {
 			],
         },
     },
+}
+###
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
 SESSION_CACHE_ALIAS = "default"
 
@@ -187,7 +193,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # mediaディレクトリのパスを設定
 
-CSRF_TRUSTED_ORIGINS = ["https://d9c3-2400-2650-2841-200-5932-c7f8-1131-467e.ngrok-free.app"]
+CSRF_TRUSTED_ORIGINS = ["https://dc9d-60-130-121-227.ngrok-free.app"]
 
 ALLOWED_ORIGINS = [
     "http://localhost:8000",

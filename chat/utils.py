@@ -48,7 +48,7 @@ async def handle_chat_message(request, roomid):
 
         # チャットメッセージをグループに送信
         await channel_layer.group_send(group_name,{
-            'type': 'send_message',
+            'type': 'send_message_finally',
             'server_message_type' : 'chat',
             'sender': request.user.account_id,
             'content' : content,

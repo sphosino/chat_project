@@ -24,6 +24,7 @@ export const makeBoard = document.querySelector('#makeboard')
 export const inputBoardX = document.querySelector('#input-boardx')
 export const inputBoardY = document.querySelector('#input-boardy')
 export const toggle_muteAudioButton = document.querySelector('#myvoice-toggle')
+export const remoteAudio = document.getElementById('remoteAudio');
 
 //CSRFトークンの取得
 export const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

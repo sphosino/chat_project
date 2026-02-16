@@ -3,14 +3,21 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 	<script src="https://cdn.jsdelivr.net/npm/emoji-button/dist/index.min.js"></script>
 	{% block header %}
 	{% endblock %}
 </head>
 <body>
+	<h1 class = "title">タイトル</h1>
+
+	</section>
 	{% block body %}
 	
 	{% endblock %}
-	<br><a href = "{% url 'accounts:index' %} ">topに戻る</a>
+	<div class = "footer">
+	<a href = "{% url 'accounts:index' %} ">topに戻る</a>
+	</div>
 </body>
 </html>

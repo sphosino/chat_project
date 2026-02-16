@@ -44,7 +44,7 @@ export async function initializeWebSocket(url){
             if (websocket.functions[message.server_message_type]) {
                 websocket.functions[message.server_message_type](message);
             } else {
-                console.warn(`No function found for ${message.server_message_type}`);
+                console.info(`No function found for ${message.server_message_type}`);
                 messageQueue.push(message)
             }
         };
@@ -52,7 +52,7 @@ export async function initializeWebSocket(url){
 }
 
 // メッセージキューを処理する関数
-export function processMessageQueue() {
+export function processMessageQueue(){
     while (messageQueue.length > 0) {
         const message = messageQueue.shift(); // キューからメッセージを取得
         const handler = websocket.functions[message.server_message_type];

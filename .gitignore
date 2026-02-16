@@ -9,3 +9,9 @@ localhost.key
 
 # local database file
 db.sqlite3
+
+venv/
+__pycache__/
+*.pyc
+.env
+*.log

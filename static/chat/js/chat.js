@@ -92,7 +92,13 @@ function insertAtCaret(input, textToInsert) {
 //チャット欄にメッセージを追加する関数
 export function chat_add(tag,content,addtag,image = "",thumbnail = ""){
     const new_text_element = document.createElement(addtag)
-    new_text_element.innerHTML = content
+    new_text_element.classList.add("added_chat")
+
+    const text = document.createElement("p")
+    text.classList.add("added_chat_name")
+    text.innerHTML = content
+    new_text_element.appendChild(text)
+
     if (image){//画像あり
         console.log("画像あり")
         const new_img_element = document.createElement('img')

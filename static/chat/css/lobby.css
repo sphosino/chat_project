@@ -1,9 +1,15 @@
 #chat-log,#user-list,#room-list{
-	height: 200px;
+	height: 250px;
 	overflow-y: scroll;
 	background-color: #888888;
 }
-
+.added_chat{
+	display: flex;
+	align-items: center;
+}
+.added_chat_name{
+	font-size: 1.5em;
+}
 .link-userlist{
 	display:block
 }
