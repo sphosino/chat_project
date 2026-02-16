@@ -1,21 +1,30 @@
-# Dockerfile
+ARG PYTHON_VERSION=3.12-slim
 
-# Pythonイメージをベースにする
-FROM python:3.10
+FROM python:${PYTHON_VERSION}
 
-# 作業ディレクトリの作成
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# 依存関係をコピーしてインストール
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# install psycopg2 dependencies.
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /code
 
-# プロジェクトファイルをコピー
-COPY . .
+WORKDIR /code
 
-ENV TZ Asia/Tokyo
+COPY requirements.txt /tmp/requirements.txt
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/
+COPY . /code
 
-# ASGIサーバーを起動
-CMD ["daphne", "-u", "/app/daphne.sock", "chat_project.asgi:application"]
+ENV SECRET_KEY "GraBRvFooS3SlsZVwINSoCIELPgl5T9RLCMVIc446symhRGVZs"
+RUN python manage.py collectstatic --noinput
 
+EXPOSE 8000
+
+CMD ["daphne","-b","0.0.0.0","-p","8000","chat_project.asgi:application"]
