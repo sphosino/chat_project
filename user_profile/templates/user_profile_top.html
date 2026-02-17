@@ -6,7 +6,7 @@
 	<h1>{{ user.account_id }}さんのプロフィール</h1>
 	<div>{{ user.profile.bio }}</div>
 	{% if user.profile.avatar %}
-	<img src = {{user.profile.avatar.url}}>
+	<img src = "{{ user.profile.avatar.url }}">
 	{% endif %}
 {% if is_owner %}
 	<hr>

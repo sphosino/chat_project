@@ -9,11 +9,10 @@ class Profile(models.Model):
     
     def __str__(self):
         return self.user.account_id
-    
 	    # 画像のリサイズを行うためにsaveメソッドをオーバーライド
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # まず画像を一度保存
-
+        """
         # 画像のリサイズ処理
         if self.avatar:
             img = Image.open(self.avatar.path)  # 画像ファイルを開く
@@ -23,3 +22,4 @@ class Profile(models.Model):
                 output_size = (300, 300)  # サイズの上限を設定
                 img.thumbnail(output_size)  # サイズを変更
                 img.save(self.avatar.path)  # リサイズした画像を保存
+                """

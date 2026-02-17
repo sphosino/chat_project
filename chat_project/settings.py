@@ -19,6 +19,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -82,10 +83,21 @@ WSGI_APPLICATION = 'chat_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
-}
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
+if DATABASE_URL:
+    # 本番（Fly.io）はPostgreSQL
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600)
+    }
+else:
+    # ローカルはSQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -142,14 +154,12 @@ AUTHENTICATION_BACKENDS = [
 
 ASGI_APPLICATION = 'chat_project.asgi.application'
 ###　Redisを使用する場合の設定
-"""
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [
-				('127.0.0.1', 6379)
-			],
+            "hosts": [os.environ.get('REDIS_URL')],
         },
     },
 }
@@ -159,6 +169,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
+"""
 
 SESSION_CACHE_ALIAS = "default"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -190,7 +201,6 @@ ALLOWED_HOSTS = ['*']
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 
-MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # mediaディレクトリのパスを設定
 
 CSRF_TRUSTED_ORIGINS = [
@@ -214,4 +224,14 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+MEDIA_URL = os.environ.get('CLOUDINARY_CLOUD_NAME') + '/'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
