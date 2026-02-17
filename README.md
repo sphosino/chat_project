@@ -13,7 +13,7 @@
 - **Backend**: Django, Django Channels, Daphne
 - **Frontend**: JavaScript, HTML/CSS, Tailwind CSS
 - **リアルタイム通信**: WebSocket, WebRTC
-- **インフラ**: fly.io  cloudinary(img), upstash(redis)
+- **インフラ**: fly.io  cloudinary(img) upstash(redis)
 - **データベース**: PostgreSQL (本番), SQLite (開発)
 
 ## スクリーンショット
