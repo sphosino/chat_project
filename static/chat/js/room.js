@@ -22,7 +22,6 @@ initializeWebSocket("chat/" + window.roomid).then( async (socket) =>{
 	const chat_add = chat_js.chat_add
 	const user_list_update_socket = userlist_js.user_list_update_socket
 
-
     const peerConnections = {}; // アカウントIDごとにRTCPeerConnectionを保持するオブジェクト
     const configuration = {
         iceServers: [
