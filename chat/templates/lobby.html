@@ -10,10 +10,6 @@
 
 
 {% block body %}
-
-    {% include 'chat.html' %}
-    {% include 'userlist.html' %}
-
     <h2>部屋のリスト</h2>
     <div id = "room-list"></div>
     <button id="room-list-update">更新！</button>
@@ -26,6 +22,10 @@
             <button value = "make-room-cancel">閉じる</button>
         </form>
     </dialog>
+    {% include 'chat.html' %}
+    {% include 'userlist.html' %}
+
+
 
 
 

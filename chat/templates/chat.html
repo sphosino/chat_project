@@ -3,20 +3,18 @@
 <div id="chat-log"></div>
 	<form id="chat-form" action = "" enctype="multipart/form-data">
 		<div class="flex gap-4">
-			<p class="control">
-				<input class="input is-primary" id="chat-message-input" autocomplete="off" type="text">
+			<p class="control flex">
+				<input class="input border" id="chat-message-input" autocomplete="off" type="text">
 				<button class = "button is-primary" id="emoji-button" type = "button">😊</button>
-			</p>
-		</div>
-		<div class="flex gap-4">
-			<p class="control">
 				<div class="file is-primary file-icon">
-					<label class="cursor-pointer">
+					<label class="cursor-pointer" title="画像を選択">
 						<input class="file-input hidden" type='file' id="image-input" accept="image/*">
 						<i class="text-3xl fas fa-upload"></i>
 					</label>
 				</div>
-				<button class="button is-primary" id="chat-message-submit" type="button">送信</button>
+			</p>
+			<p class="control">
+				<button class="button bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600" id="chat-message-submit" type="button">送信</button>
 			</p>
 		</div>
 	</form>
