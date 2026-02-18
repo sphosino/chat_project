@@ -2,28 +2,21 @@
 <section>
 <div id="chat-log"></div>
 	<form id="chat-form" action = "" enctype="multipart/form-data">
-		<div class="field is-grouped">
+		<div class="flex gap-4">
 			<p class="control">
 				<input class="input is-primary" id="chat-message-input" autocomplete="off" type="text">
-			</p>
-			<p class="control">
 				<button class = "button is-primary" id="emoji-button" type = "button">😊</button>
 			</p>
+		</div>
+		<div class="flex gap-4">
 			<p class="control">
-				<div class="file is-primary">
-					<label class="file-label">
-						<input class="file-input" type='file' id="image-input" accept="image/*">
-						<span class="file-cta">
-							<span class="file-icon">
-							<i class="fas fa-upload"></i>
-							</span>
-							<span class="file-label">画像</span>
-						</span>
+				<div class="file is-primary file-icon">
+					<label class="cursor-pointer">
+						<input class="file-input hidden" type='file' id="image-input" accept="image/*">
+						<i class="text-3xl fas fa-upload"></i>
 					</label>
 				</div>
-			</p>
-			<p class="control">
-				<button class="button is-primary" id="chat-message-submit" type="button">Send</button>
+				<button class="button is-primary" id="chat-message-submit" type="button">送信</button>
 			</p>
 		</div>
 	</form>
