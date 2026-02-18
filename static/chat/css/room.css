@@ -1,9 +1,7 @@
 #chat-log,#user-list,#room-list{
-	height: 250px;
 	overflow-y: scroll;
 	background-color: #888888;
-	min-height:0;
-    overflow:auto;
+	min-height:200px;
 }
   @media (max-width: 600px) {
 	.flexbox {
