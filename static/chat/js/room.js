@@ -1,17 +1,8 @@
 //room.js
 import { initializeWebSocket, processMessageQueue, saveInitializedSocket} from "./websocket.js";
-import { chatLog,chatform, makeBoardModal, makeBoard, inputBoardX, inputBoardY,boardCanvas, remoteAudio, toggle_muteAudioButton,userListContainer} from "./elements.js";
+import { chatLog, makeBoardModal, makeBoard, inputBoardX, inputBoardY,boardCanvas, remoteAudio, toggle_muteAudioButton} from "./elements.js";
 import GoBoard from "./goban/goban.js";
 
-//ウィンドウのサイズに合わせてチャットログとユーザーリストの幅を調整する関数
-function syncWidths(){
-    if(!chatform) return;
-    const w = chatform.offsetWidth + "px";
-    if(chatLog) chatLog.style.width = w;
-    if(userListContainer) userListContainer.style.width = w;
-}
-window.addEventListener("load", syncWidths);
-window.addEventListener("resize", syncWidths);
 
 
 let goban; //碁盤用の変数

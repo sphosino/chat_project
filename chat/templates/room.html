@@ -12,16 +12,14 @@
 
 {% block body %}
 
-
-	<h1>{{ room.id }}番部屋　{{user.account_id}}->{{room.name}}</h1>
-
-	<div class = "flex gap-6 md:flex-row flex-col">
-		<div class="flex flex-col flex-1 min-w-0 w-full">
+	<div class = "flex gap-6 md:flex-row flex-col mx-auto w-fit">
+		<div class="flex-none w-auto min-w-0">
+			<h1>{{ room.id }}番部屋　{{user.account_id}}->{{room.name}}</h1>
 			{% include 'chat.html' %}
 			{% include 'userlist.html' %}
 		</div>
 
-		<div id = "board-main" class="w-full md:w-auto">
+		<div id = "board-main" class="flex-none w-auto">
 			<div id = "position"></div>
 			<div id = "captures"></div>
 			<button type = "button" id = "makeboard">碁盤作成</button>
