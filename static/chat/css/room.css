@@ -3,8 +3,6 @@
 	background-color: #888888;
 	min-height:200px;
 }
-  @media (max-width: 600px) {
-	.flexbox {
-	  flex-direction: column; /* 縦並びに変更 */
-	}
-  }
+.link-userlist{
+	display:block
+}
