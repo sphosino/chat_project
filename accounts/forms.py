@@ -17,5 +17,6 @@ class SignUpForm(UserCreationForm):
 		self.fields['account_id'].label = "ユーザー名"
 
 class LoginForm(AuthenticationForm):
-	class Meta:
-		model = CustomUser
+	def __init__(self, request=None, *args, **kwargs):
+		super().__init__(request, *args, **kwargs)
+		self.fields['username'].label = "ユーザー名"
