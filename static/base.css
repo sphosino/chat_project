@@ -27,6 +27,6 @@ a,button{
 a:hover,button:hover{
     opacity: 0.7;
 }
-#user-list > a{
+#user-list > a, #room-list > a{
     color: #000000 !important;
 }
