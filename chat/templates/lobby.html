@@ -13,14 +13,18 @@
     <section class="border-2 border-blue-500">
         <h2>部屋のリスト</h2>
         <div id = "room-list"></div>
-        <button id="room-list-update">部屋更新！</button>
-        <button id="make-room-submit">新規作成！</button>
+        <div class="flex gap-4">
+            <button id="room-list-update">部屋更新！</button>
+            <button id="make-room-submit">新規作成！</button>
+        </div>
         <dialog id = "make-room-modal" >
             <p>部屋名を入力してね！</p>
-            <form method="dialog" id = "make-room-form">
-                <input type="text" id = "room_name_input" autocomplete="off">
+            <form method="dialog" id = "make-room-form" class="flex flex-col gap-2">
+                <div><input type="text" id = "room_name_input" autocomplete="off"></div>
+                <div class="flex justify-end gap-2">
                 <button value = "make-room-submit" form = "make-room-form">作成！</button>
                 <button value = "make-room-cancel">閉じる</button>
+                </div>
             </form>
         </dialog>
     </section>
