@@ -13,11 +13,11 @@
 {% endif %}
 <form method = "post" action = "{% url 'accounts:logout' %}">
 	{% csrf_token %}
-<button>logout</button>
+<button>ログアウト</button>
 </form>
 {% else %}
-<a href="{% url 'accounts:login' %}">login</a><br>
-<a href="{% url 'accounts:signup' %}">Signup</a>
+<a href="{% url 'accounts:login' %}">ログイン</a><br>
+<a href="{% url 'accounts:signup' %}">アカウント作成</a>
 {% endif %}
 
 {% endblock %}

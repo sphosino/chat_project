@@ -5,9 +5,9 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <div>
-        <button type="submit">Login</button>
-        <a href="{% url 'accounts:index' %}">Back</a>
+    <div class="flex gap-3">
+        <button type="submit">ログイン</button>
+        <a href="{% url 'accounts:index' %}">戻る</a>
     </div>
 </form>
 
