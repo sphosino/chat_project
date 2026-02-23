@@ -72,17 +72,16 @@ class ChatMessage(models.Model):
         return f"{self.user} -> {self.content[:50]}"
 
     def delete(self, *args, **kwargs):
-        try:
-            if self.image:
-                self.image.delete(save=False)
-        except Exception as e:
-            print("Cloudinary削除失敗（無視）:", e)
+        storage = self.image.storage if self.image else None
+        name = self.image.name if self.image else None
 
+        if storage and name:
+            try:
+                storage.delete(name)
+            except Exception:
+                pass
         super().delete(*args, **kwargs)
-
-
-
-
+        
 EMPTY = 0
 BLACK = 1
 WHITE = 2
