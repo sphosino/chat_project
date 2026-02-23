@@ -14,7 +14,7 @@
 
 	<div class = "flex gap-6 md:flex-row flex-col mx-auto w-fit">
 		<div class="flex-none w-auto min-w-0">
-			<h1>{{ room.id }}番部屋　{{user.account_id}}->{{room.name}}</h1>
+			<h2>( {{ room.id }}番部屋  {{room.name}} ) -> {{user.account_id}} </h2>
 			{% include 'chat.html' %}
 			{% include 'userlist.html' %}
 		</div>
