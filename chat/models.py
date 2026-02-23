@@ -71,6 +71,15 @@ class ChatMessage(models.Model):
     def __str__(self):
         return f"{self.user} -> {self.content[:50]}"
 
+    def delete(self, *args, **kwargs):
+        try:
+            if self.image:
+                self.image.delete(save=False)
+        except Exception as e:
+            print("Cloudinary削除失敗（無視）:", e)
+
+        super().delete(*args, **kwargs)
+
 
 
 
