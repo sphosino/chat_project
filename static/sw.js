@@ -40,7 +40,7 @@ self.addEventListener('fetch', event => {
   if (event.request.url.includes('/api/')) {
     return;
   }
-  // HTMLはネットワーク優先（ログイン後の表示崩れ対策）
+  // HTMLはネットワーク優先（ログイン後の表示崩れ対策(chrome)）
   if (event.request.headers.get('accept').includes('text/html')) {
     event.respondWith(
       fetch(event.request).catch(() => caches.match(event.request))
