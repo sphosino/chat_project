@@ -11,6 +11,16 @@ let localStream
 toggle_muteAudioButton.addEventListener('click',() => {
     toggle_muteAudio(localStream);
 })
+function goban_sync(goban_data){
+    console.log(goban_data)
+    goban.board = goban_data.board
+    goban.turn = goban_data.turn
+    goban.koY = goban_data.koY
+    goban.koX = goban_data.koX
+    goban.koTurn = goban_data.koTurn
+    goban.blackCaptureCount = goban_data.black_capture
+    goban.whiteCaptureCount = goban_data.white_capture
+}
 
 initializeWebSocket("chat/" + window.roomid).then( async (socket) =>{
 	saveInitializedSocket(socket); 
@@ -66,14 +76,7 @@ initializeWebSocket("chat/" + window.roomid).then( async (socket) =>{
         goban = new GoBoard(canvas.getContext("2d"),data.id,400,400,data.y,data.x,0,0);
         console.log(data);
         if (data.board){
-            console.log(data)//実行されていない！？
-            goban.board = data.board
-            goban.turn = data.turn
-            goban.koY = data.koY
-            goban.koX = data.koX
-            goban.koTurn = data.koTurn
-            goban.blackCaptureCount = data.black_capture
-            goban.whiteCaptureCount = data.white_capture
+            goban_sync(data);
         }
 
         canvas.addEventListener('mousemove',(event)=>{
@@ -112,16 +115,9 @@ initializeWebSocket("chat/" + window.roomid).then( async (socket) =>{
         })
     });
     socket.registerFunction('place_stone',(data)=>{
-        
-        console.log(data)
-        goban.board = data.board
-        goban.turn = data.turn
-        goban.koY = data.koY
-        goban.koX = data.koX
-        goban.koTurn = data.koTurn
-        goban.blackCaptureCount = data.black_capture
-        goban.whiteCaptureCount = data.white_capture
+        goban_sync(data)
     })
+
     socket.registerFunction('p2pOffer', async (data)=>{
         console.log('オファーハンドラを呼びます')
         await handleOffer(data.sender, data.offer);
