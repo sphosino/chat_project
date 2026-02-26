@@ -63,7 +63,18 @@ initializeWebSocket("chat/" + window.roomid).then( async (socket) =>{
         canvas.height = 480
         boardCanvas.appendChild(canvas)
 
-        goban = new GoBoard(canvas.getContext("2d"),data.id,400,400,data.y,data.x,0,0)
+        goban = new GoBoard(canvas.getContext("2d"),data.id,400,400,data.y,data.x,0,0);
+        console.log(data);
+        if (data.board){
+            console.log(data)//実行されていない！？
+            goban.board = data.board
+            goban.turn = data.turn
+            goban.koY = data.koY
+            goban.koX = data.koX
+            goban.koTurn = data.koTurn
+            goban.blackCaptureCount = data.black_capture
+            goban.whiteCaptureCount = data.white_capture
+        }
 
         canvas.addEventListener('mousemove',(event)=>{
             const rect = canvas.getBoundingClientRect();

@@ -287,6 +287,9 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
 
             # 過去のメッセージを取得してクライアントに送信
             await self.send_previous_messages(self.room, 100)
+            
+            # roomに紐づく既存のGoBoardを新規参加ユーザーに送信
+            await self.send_existing_boards()
 
         else:
             self.close()
@@ -355,7 +358,7 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
                 @database_sync_to_async
                 def make_go_board():
                     room = ChatRoom.objects.get(id = self.room_id)
-                    new_board = GoBoard(y = y, x = x, room = room)#GoBoardクラスのForeignkeyにChatRoomがある。
+                    new_board = GoBoard(y = y, x = x, room = room)
                     new_board.save()
                     return {
                         "id" : new_board.id,
@@ -408,8 +411,30 @@ class RoomConsumer(AsyncWebsocketConsumer, SendMethodMixin):
             await target_socket.send_message(message_type, **text_data)
         else:
             print(f"Error: Socket for account {text_data['for']} not found.")
-        
 
+    async def send_existing_boards(self):
+        @database_sync_to_async
+        def get_boards():
+            boards = list(GoBoard.objects.filter(room=self.room))
+            print(f"取得したboard数: {len(boards)}") 
+            return boards
+
+        boards = await get_boards()
+        print(f"送信するboard数: {len(boards)}")
+        for board in boards:
+            await self.send_message('make_go_board',
+                id    = board.id,
+                y     = board.y,
+                x     = board.x,
+                board = board.board,
+                turn  = board.turn,
+                koY   = board.koY,
+                koX   = board.koX,
+                koTurn       = board.koTurn,
+                black_capture = board.black_capture_count,
+                white_capture = board.white_capture_count,
+            )
+#---------------------------------------------------------------
 async def manage_user_in_chatroom(self, room_id, action):
 
     @database_sync_to_async
