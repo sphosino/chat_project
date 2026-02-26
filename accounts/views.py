@@ -5,6 +5,11 @@ from django.views.generic import TemplateView,CreateView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, LoginForm
 
+from django.views.decorators.cache import never_cache
+from django.contrib.staticfiles import finders
+import os
+from django.http import HttpResponse
+
 class IndexView(TemplateView):
 	template_name = "index.html"
 
@@ -31,3 +36,24 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
 	success_url = reverse_lazy("accounts:index")
+
+#サービスワーカ
+@never_cache
+def service_worker(request):
+    sw_path = finders.find('sw.js')
+    if not sw_path or not os.path.exists(sw_path):
+        return HttpResponse("Service worker not found", status=404)
+    
+    with open(sw_path, 'r') as f:
+        content = f.read()
+    return HttpResponse(content, content_type='application/javascript')
+
+@never_cache  
+def manifest(request):
+    manifest_path = finders.find('sw.js')
+    if not sw_path or not os.path.exists(sw_path):
+        return HttpResponse("manifest not found", status=404)
+    
+    with open(sw_path, 'r') as f:
+        content = f.read()
+    return HttpResponse(content, content_type='application/javascript')

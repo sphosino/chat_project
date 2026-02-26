@@ -222,12 +222,12 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
-# 文字列の結合ではなく、f-stringなどを使うか、Noneの場合の回避策を入れる
+
 CLOUDINARY_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
 if CLOUDINARY_NAME:
     MEDIA_URL = f"{CLOUDINARY_NAME}/"
 else:
-    MEDIA_URL = '/media/'  # 設定がない場合の予備
+    MEDIA_URL = '/media/'
 
 STORAGES = {
     "default": {

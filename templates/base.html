@@ -9,6 +9,11 @@
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="stylesheet" href="{% static 'base.css'%}">
 	<title>囲碁検討室</title>
+
+	<link rel="manifest" href="{% static 'manifest.json' %}">
+	<meta name="theme-color" content="#092E20">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
 	{% block header %}
 	{% endblock %}
 </head>
@@ -29,5 +34,12 @@
 			</div>
 		</div>
 	</div>
+	  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.error('SW error', err));
+    }
+  </script>
 </body>
 </html>
