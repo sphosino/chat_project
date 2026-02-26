@@ -40,7 +40,13 @@ self.addEventListener('fetch', event => {
   if (event.request.url.includes('/api/')) {
     return;
   }
-
+  // HTMLはネットワーク優先（ログイン後の表示崩れ対策）
+  if (event.request.headers.get('accept').includes('text/html')) {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(event.request))
+    );
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
