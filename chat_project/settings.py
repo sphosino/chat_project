@@ -15,6 +15,7 @@ import os
 import dj_database_url
 from dotenv import load_dotenv
 load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -237,3 +238,8 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     },
 }
+
+VAPID_PRIVATE_KEY = os.environ.get("VAPID_PRIVATE_KEY")
+VAPID_PUBLIC_KEY = os.environ.get("VAPID_PUBLIC_KEY")
+print("VAPID_PRIVATE_KEY:", VAPID_PRIVATE_KEY)
+print("VAPID_PUBLIC_KEY:", VAPID_PUBLIC_KEY)

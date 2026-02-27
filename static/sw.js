@@ -36,7 +36,7 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   // APIリクエストはキャッシュしない
-   console.log('Fetch:', event.request.url);
+  //console.log('Fetch:', event.request.url);
   if (event.request.url.includes('/api/')) {
     return;
   }
@@ -49,5 +49,48 @@ self.addEventListener('fetch', event => {
   }
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
+  );
+});
+
+self.addEventListener("push", (event) => {
+  console.log("Push received:", event);
+
+  let data = { title: "通知", body: "メッセージがあります" };
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: "/static/icons/icon-192.png",
+      badge: "/static/icons/icon-192.png",
+      data: data.url || "/chat/lobby/"
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const url = event.notification.data || "/chat/lobby/";
+
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (client.url.includes(url) && "focus" in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
   );
 });

@@ -14,3 +14,5 @@ channels-redis==4.2.0
 sqlparse==0.5.1
 whitenoise==6.7.0
 python-dotenv
+py-vapid
+pywebpush

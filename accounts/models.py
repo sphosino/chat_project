@@ -31,16 +31,29 @@ class CustomUserManager(BaseUserManager):
         )
     
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-	account_id = models.CharField(
+    account_id = models.CharField(
 		unique = True,
 		max_length=255
-	)
-	is_active = models.BooleanField(default = True)
-	is_staff = models.BooleanField(default = False)
-	is_superuser = models.BooleanField(default = False)
+    )
+    is_active = models.BooleanField(default = True)
+    is_staff = models.BooleanField(default = False)
+    is_superuser = models.BooleanField(default = False)
 
-	objects = CustomUserManager()
-	USERNAME_FIELD = 'account_id'
-     
-	def __str__(self):
-		return self.account_id
+    notify_room_create = models.BooleanField(default = False)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = 'account_id'
+    def __str__(self):
+        return self.account_id
+
+class PushSubscription(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="subscriptions"
+    )
+    endpoint = models.TextField(unique=True)
+    p256dh = models.TextField()
+    auth = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

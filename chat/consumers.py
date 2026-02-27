@@ -6,6 +6,10 @@ django.setup()
 
 from .models import ChatRoom, ChatMessage, GoBoard
 import json
+from django.conf import settings
+from accounts.models import CustomUser, PushSubscription
+from pywebpush import webpush, WebPushException
+from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
@@ -200,8 +204,41 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                         return list()
                     return list(chatroom)
                 room_list = { i.name : i.id for i in await make_room()}
+
+                #新しい部屋が作られたことを通知するプッシュ通知を送る
+                @database_sync_to_async
+                def send_push_notifications():
+                    users = CustomUser.objects.filter(notify_room_create=True)
+                    for user in users:
+                        subs = PushSubscription.objects.filter(user=user)
+                        for sub in subs:
+                            try:
+                                webpush(
+                                    subscription_info={
+                                        "endpoint": sub.endpoint,
+                                        "keys": {
+                                            "p256dh": sub.p256dh,
+                                            "auth": sub.auth,
+                                        },
+                                    },
+                                    data=json.dumps({
+                                        "title": "新しい部屋が作られました",
+                                        "body": f"{room_name} が作成されました",
+                                        "url": "/chat/lobby/"
+                                    }),
+                                    vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                                    vapid_claims={
+                                        "sub": "mailto:test@example.com"
+                                    },
+                                )
+                            except WebPushException as e:
+                                logger.error(f"Push failed: {e}")
+                await send_push_notifications()
+
+                #新しい部屋が作られたことをロビーにいる全員に通知
                 await self.send_message(client_message_type)
                 await self.send_message_to_group(client_message_type, roomlist = room_list)
+
             
             case 'room-list-update':
 
