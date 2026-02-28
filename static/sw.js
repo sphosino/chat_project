@@ -1,4 +1,4 @@
-const CACHE_NAME = 'django-pwa-v1';
+const CACHE_NAME = 'django-pwa-v2'; // バージョンを上げて古いキャッシュを捨てやすくします
 const ASSETS = [
   '/',
   '/static/base.css',
@@ -17,46 +17,63 @@ const ASSETS = [
   '/static/icons/icon-512.png'
 ];
 
+// --- 1. インストールと更新の強制 ---
 self.addEventListener('install', event => {
-  console.log('Service Worker installed.');
+  console.log('Service Worker: Installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Service Worker: Caching Assets');
+      return cache.addAll(ASSETS);
+    })
   );
-  self.skipWaiting();
+  self.skipWaiting(); // 新しいSWを待機させずに即時適用
 });
 
 self.addEventListener('activate', event => {
+  console.log('Service Worker: Activated');
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            console.log('Service Worker: Clearing Old Cache', key);
+            return caches.delete(key);
+          }
+        })
+      );
+    })
   );
-  self.clients.claim();
+  return self.clients.claim(); // 全てのタブを即座に新しいSWの支配下に置く
 });
 
+// --- 2. ネットワーク優先 (Network-First) ストラテジー ---
 self.addEventListener('fetch', event => {
   // APIリクエストはキャッシュしない
-  //console.log('Fetch:', event.request.url);
-  if (event.request.url.includes('/api/')) {
-    return;
-  }
-  // HTMLはネットワーク優先（ログイン後の表示崩れ対策(chrome)）
-  if (event.request.headers.get('accept').includes('text/html')) {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
-    );
-    return;
-  }
+  if (event.request.url.includes('/api/')) return;
+
+  // HTMLや静的ファイルはまずネットワークを確認し、ダメならキャッシュを出す
   event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        // ネットワークが成功したらキャッシュを更新して返す
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // オフラインまたはネットワークエラー時のみキャッシュを返す
+        return caches.match(event.request);
+      })
   );
 });
 
+// --- 3. プッシュ通知 (既存のまま) ---
 self.addEventListener("push", (event) => {
-  console.log("Push received:", event);
-
   let data = { title: "通知", body: "メッセージがあります" };
-
   if (event.data) {
     try {
       data = event.data.json();
@@ -64,7 +81,6 @@ self.addEventListener("push", (event) => {
       data.body = event.data.text();
     }
   }
-
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
@@ -75,11 +91,10 @@ self.addEventListener("push", (event) => {
   );
 });
 
+// --- 4. 通知クリック (既存のまま) ---
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-
   const url = event.notification.data || "/chat/lobby/";
-
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
@@ -88,9 +103,7 @@ self.addEventListener("notificationclick", (event) => {
             return client.focus();
           }
         }
-        if (clients.openWindow) {
-          return clients.openWindow(url);
-        }
+        if (clients.openWindow) return clients.openWindow(url);
       })
   );
 });
