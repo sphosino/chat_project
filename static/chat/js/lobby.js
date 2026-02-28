@@ -1,6 +1,6 @@
 //lobby.js
 import { initializeWebSocket, processMessageQueue, saveInitializedSocket} from "./websocket.js";
-import { chatLog, roomListUpdate, roomList, roomNameInput, makeRoomModal , makeRoomSubmit} from "./elements.js";
+import { chatLog, roomListUpdate, roomList, roomNameInput,roomNotifyInput, makeRoomModal , makeRoomSubmit} from "./elements.js";
 
 initializeWebSocket("chat/lobby").then( async (socket) =>{
 	saveInitializedSocket(socket); 
@@ -49,7 +49,8 @@ initializeWebSocket("chat/lobby").then( async (socket) =>{
 			case 'make-room-submit':
 				socket.send(JSON.stringify({
 					'client_message_type': 'make_room',
-					'room_name': roomNameInput.value
+					'room_name': roomNameInput.value,
+					'notify':roomNotifyInput.value
 				}));
 			break;
 			case 'make-room-cancel':

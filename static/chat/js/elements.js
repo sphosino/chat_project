@@ -16,6 +16,7 @@ export const roomList = document.querySelector('#room-list')
 export const makeRoomModal = document.querySelector('#make-room-modal')
 export const makeRoomSubmit = document.querySelector('#make-room-submit')
 export const roomNameInput = document.querySelector('#room_name_input')
+export const roomNotifyInput = document.querySelector('#notify_on_create')
 
 //ルーム関連
 export const boardCanvas = document.querySelector("#board-main")

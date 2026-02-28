@@ -25,6 +25,10 @@
             <form method="dialog" id = "make-room-form" class="flex flex-col gap-2">
                 <div><input type="text" id = "room_name_input" autocomplete="off"></div>
                 <div class="flex justify-end gap-2">
+                <label>
+                <input type="checkbox" id="notify_on_create" checked>
+                この部屋の作成を通知する
+                </label>
                 <button value = "make-room-submit" form = "make-room-form">作成！</button>
                 <button value = "make-room-cancel">閉じる</button>
                 </div>
