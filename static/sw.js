@@ -50,6 +50,10 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   // APIリクエストはキャッシュしない
   if (event.request.url.includes('/api/')) return;
+  //chrome-extension などはスキップ
+  if (!(event.request.url.indexOf('http') === 0)) {
+    return;
+  }
 
   // HTMLや静的ファイルはまずネットワークを確認し、ダメならキャッシュを出す
   event.respondWith(

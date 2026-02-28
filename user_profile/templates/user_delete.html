@@ -7,23 +7,33 @@
 {% if is_owner %}
 	<h1>{{ user.account_id }}さんのアカウントを削除します</h1>
 	<hr>
-	
 	<a id="delete_button">削除</a>
 	<dialog id = "delete-user-modal" >
 		<div>本当に削除しますか？</div>
 		<div>元に戻すことはできません</div>
 		<form method="dialog" id = "delete-user-form" class="flex flex-col gap-2">
-			<button value = "delete-user-OK">アカウントを削除する</button>
-			<button value = "delete-user-cancel">やめる</button>
+			<button value = "ok" type="submit">アカウントを削除する</button>
+			<button value = "cancel" type="submit">やめる</button>
 		</form>
 	</dialog>
+	<form id="real-delete-form" method="POST" action="{% url 'user_profile:user_del' user.id %}">
+    	{% csrf_token %}
+	</form>
+	<script>
+		const modal = document.querySelector("#delete-user-modal");
+		modal.addEventListener("close",function(){
+			if(modal.returnValue === "ok"){
+				document.querySelector("#real-delete-form").submit();
+			}
+		})
+
+		document.querySelector("#delete_button").onclick = function(e) {
+			document.querySelector("#delete-user-modal").showModal();
+		};
+	</script>
 {% else %}
 	<h1>無効なページ</h1>
 {% endif %}
-<script>
-	document.querySelector("#delete_button").onclick = function(e) {
-		document.querySelector("#delete-user-modal").showModal();
-	};
-</script>
+
 {% endblock %}
 

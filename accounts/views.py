@@ -10,6 +10,10 @@ from django.contrib.staticfiles import finders
 import os
 from django.http import HttpResponse
 
+from django.contrib.auth.decorators import login_required
+from accounts.models import PushSubscription
+import json
+
 class IndexView(TemplateView):
 	template_name = "index.html"
 
@@ -57,3 +61,26 @@ def manifest(request):
     with open(sw_path, 'r') as f:
         content = f.read()
     return HttpResponse(content, content_type='application/javascript')
+
+#サービスワーカーからの購読情報を保存するためのビュー
+@login_required
+def save_subscription(request):
+    
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        endpoint = data.get("endpoint")
+        keys = data.get("keys", {})
+
+        PushSubscription.objects.update_or_create(
+            endpoint=endpoint,
+            defaults={
+                "user": request.user,
+                "p256dh": keys.get("p256dh"),
+                "auth": keys.get("auth"),
+            }
+        )
+        print("subscription saved:", endpoint)
+        return JsonResponse({"status": "ok"})
+
+    return JsonResponse({"error": "invalid"}, status=400)

@@ -19,8 +19,9 @@ def delview(request, userid):
 	print('delview_called!')
 
 	if request.method == 'POST':
-
-		return render(request, "user_top.html" ,data)
+		user = get_user_model().objects.get(id = userid)
+		user.delete()
+		return redirect("accounts:index")
 	
 	user = get_user_model().objects.get(id = userid)
 	profile, created = Profile.objects.get_or_create(user=user)

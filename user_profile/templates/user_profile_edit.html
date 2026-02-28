@@ -13,7 +13,7 @@
 {% if is_owner %}
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ profile_form.as_p }}  <!-- フォームのフィールドをパラグラフとして表示 -->
+    {{ profile_form.as_p }}
     <hr>
     <h3>通知設定</h3>
     {{ user_form.as_p}}
