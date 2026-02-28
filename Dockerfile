@@ -23,7 +23,7 @@ RUN set -ex && \
 COPY . /code
 
 
-RUN rm -rf /code/staticfiles/* # 前回の残骸を消す
+RUN rm -rf /code/staticfiles/* && python manage.py collectstatic --noinput
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
