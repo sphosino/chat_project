@@ -12,5 +12,7 @@
 	<hr>
 	<a href = "{% url 'user_profile:user_edit' user.id %}">編集</a>
 {% endif %}
+	<hr>
+	<a href = "{% url 'user_profile:user_del' user.id %}">アカウントを削除</a>
 
 {% endblock %}

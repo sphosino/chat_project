@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block header %}
+{% load static %}
+{% endblock %}
+{% block body %}
+	
+{% if is_owner %}
+	<h1>{{ user.account_id }}さんのアカウントを削除します</h1>
+	<hr>
+	
+	<a id="delete_button">削除</a>
+	<dialog id = "delete-user-modal" >
+		<div>本当に削除しますか？</div>
+		<div>元に戻すことはできません</div>
+		<form method="dialog" id = "delete-user-form" class="flex flex-col gap-2">
+			<button value = "delete-user-OK">アカウントを削除する</button>
+			<button value = "delete-user-cancel">やめる</button>
+		</form>
+	</dialog>
+{% else %}
+	<h1>無効なページ</h1>
+{% endif %}
+<script>
+	document.querySelector("#delete_button").onclick = function(e) {
+		document.querySelector("#delete-user-modal").showModal();
+	};
+</script>
+{% endblock %}
+
