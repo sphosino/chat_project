@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
-from .forms import ProfileEditForm
+from .forms import ProfileEditForm,UserNotifyForm
 from .models import Profile
 
 def topview(request, userid):
@@ -21,20 +21,27 @@ def editview(request, userid):
 
 	if request.method == 'POST':
 		print(request.POST)
-		form = ProfileEditForm(request.POST, request.FILES, instance = profile)
-		if form.is_valid():
-			form.save()
+		
+		profile_form = ProfileEditForm(request.POST, request.FILES, instance = profile)
+		user_form = UserNotifyForm(request.POST, instance=user)
+
+		if profile_form.is_valid() and user_form.is_valid():
+			profile_form.save()
+			user_form.save()
 			return redirect('user_profile:user_top', userid)
 		else:
-			print(form.errors)
+			print(profile_form.errors)
+			print(user_form.errors)
 			return redirect('user_profile:user_top', userid)
 	else:
 
-		form = ProfileEditForm(instance = profile)
+		profile_form = ProfileEditForm(instance = profile)
+		user_form = UserNotifyForm(instance=user)
 		data = {
 			"user":user,
 			"is_owner": user == request.user,
-			"form": form
+			"profile_form": profile_form,
+			"user_form": user_form
 		}
 
 		return render(request, "user_profile_edit.html",data)

@@ -19,6 +19,12 @@ class Profile(models.Model):
         ],
         verbose_name="アバター"
     )
+
+    # 追加
+    allow_notification = models.BooleanField(
+        default=True,
+        verbose_name="通知を受け取る"
+    )
     
     def __str__(self):
         return self.user.account_id

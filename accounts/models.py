@@ -39,7 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default = False)
     is_superuser = models.BooleanField(default = False)
 
-    notify_room_create = models.BooleanField(default = False)
+    notify_room_create = models.BooleanField(default = False,verbose_name="誰かが部屋作成したら通知を受け取る")
 
     objects = CustomUserManager()
 
