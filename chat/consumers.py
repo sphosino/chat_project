@@ -31,8 +31,13 @@ exit()
 logger = logging.getLogger(__name__)
 logging.getLogger("daphne.ws_protocol").setLevel(logging.ERROR)
 
-GLOBAL_LOBBY, result = ChatRoom.objects.get_or_create(name='__system_lobby')
-GLOBAL_LOBBY_ID = GLOBAL_LOBBY.id
+GLOBAL_LOBBY, created = ChatRoom.objects.get_or_create(name='__system_lobby')
+GLOBAL_LOBBY_ID = GLOBAL_LOBBY.id 
+
+if created:
+    print("新しくロビーを作成しました！")
+else:
+    print("既に存在していたので、既存のものを取得しました。")
 
 class SendMethodMixin():
 
