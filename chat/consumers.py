@@ -228,7 +228,7 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                                     }),
                                     vapid_private_key=settings.VAPID_PRIVATE_KEY,
                                     vapid_claims={
-                                        "sub": "mailto:adimin@https://chat-project-red-waterfall-3034.fly.dev/"
+                                        "sub": "mailto:sphosino@gmail.com"
                                     },
                                 )
                             except WebPushException as e:
