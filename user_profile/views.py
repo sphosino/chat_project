@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
 from .forms import ProfileEditForm,UserNotifyForm
 from .models import Profile
+from django.conf import settings
 
 def topview(request, userid):
 	
@@ -41,7 +42,8 @@ def editview(request, userid):
 			"user":user,
 			"is_owner": user == request.user,
 			"profile_form": profile_form,
-			"user_form": user_form
+			"user_form": user_form,
+			"VAPID_PUBLIC_KEY": settings.VAPID_PUBLIC_KEY
 		}
 
 		return render(request, "user_profile_edit.html",data)

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block header %}
 {% load static %}
+    <meta name="csrf-token" content = "{{csrf_token}}">
+    <script>
+        window.VAPID_PUBLIC_KEY = "{{ VAPID_PUBLIC_KEY }}";
+    </script>
 {% endblock %}
 {% block body %}
 <h1>{{ user.account_id }}</h1>
@@ -19,5 +23,58 @@
     <p>このプロフィールは編集できません。</p>
 {% endif %}
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const checkbox = document.getElementById("id_notify_room_create");
+    if (!checkbox) return;
 
+    checkbox.addEventListener("change", async () => {
+
+        if (!checkbox.checked) return;
+
+        if (Notification.permission === "default") {
+            const result = await Notification.requestPermission();
+            if (result !== "granted") {
+                checkbox.checked = false;
+                return;
+            }
+        }
+        await registerPush();
+    });
+
+
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').content;
+    }
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+    }
+    async function registerPush() {
+        if (!("serviceWorker" in navigator)) return;
+        if (!("PushManager" in window)) return;
+        console.log("serviceWorkerOK:", "serviceWorker" in navigator, "pushManagerOK:", "PushManager" in window);
+
+        const registration = await navigator.serviceWorker.ready;
+        const existingSub = await registration.pushManager.getSubscription();
+        const subscription = existingSub || await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(window.VAPID_PUBLIC_KEY)
+        });
+
+        await fetch("/chat/api/save-subscription/", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify(subscription)
+        });
+    }
+});
+</script>
 {% endblock %}
