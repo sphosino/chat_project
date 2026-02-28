@@ -32,6 +32,6 @@ console_command = '/code/manage.py shell'
   cpus = 1
   memory_mb = 512
 
-[[statics]]
- guest_path = '/code/static'
- url_prefix = '/static/'
+#[[statics]]
+# guest_path = '/code/static'
+# url_prefix = '/static/'
