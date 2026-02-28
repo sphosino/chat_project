@@ -205,39 +205,39 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                     return list(chatroom)
                 room_list = { i.name : i.id for i in await make_room()}
 
+                #新しい部屋が作られたことを通知するプッシュ通知を送る
+                @database_sync_to_async
+                def send_push_notifications():
+                    users = CustomUser.objects.filter(notify_room_create=True).exclude(id=self.user.id)
+                    for user in users:
+                        subs = PushSubscription.objects.filter(user=user)
+                        for sub in subs:
+                            try:
+                                webpush(
+                                    subscription_info={
+                                        "endpoint": sub.endpoint,
+                                        "keys": {
+                                            "p256dh": sub.p256dh,
+                                            "auth": sub.auth,
+                                        },
+                                    },
+                                    data=json.dumps({
+                                        "title": "新しい部屋が作られました",
+                                        "body": f"{room_name} が作成されました",
+                                        "url": "/chat/lobby/"
+                                    }),
+                                    vapid_private_key=settings.VAPID_PRIVATE_KEY,
+                                    vapid_claims={
+                                        "sub": "mailto:sphosino@gmail.com"
+                                    },
+                                )
+                            except WebPushException as e:
+                                logger.error(f"Push failed: {e}")
+                                status = getattr(e.response, "status_code", None)
+                                if status in [404,410]:
+                                    sub.delete()
+                print(text_data_json['notify'])
                 if text_data_json['notify']:
-
-                    #新しい部屋が作られたことを通知するプッシュ通知を送る
-                    @database_sync_to_async
-                    def send_push_notifications():
-                        users = CustomUser.objects.filter(notify_room_create=True).exclude(id=self.user.id)
-                        for user in users:
-                            subs = PushSubscription.objects.filter(user=user)
-                            for sub in subs:
-                                try:
-                                    webpush(
-                                        subscription_info={
-                                            "endpoint": sub.endpoint,
-                                            "keys": {
-                                                "p256dh": sub.p256dh,
-                                                "auth": sub.auth,
-                                            },
-                                        },
-                                        data=json.dumps({
-                                            "title": "新しい部屋が作られました",
-                                            "body": f"{room_name} が作成されました",
-                                            "url": "/chat/lobby/"
-                                        }),
-                                        vapid_private_key=settings.VAPID_PRIVATE_KEY,
-                                        vapid_claims={
-                                            "sub": "mailto:sphosino@gmail.com"
-                                        },
-                                    )
-                                except WebPushException as e:
-                                    logger.error(f"Push failed: {e}")
-                                    status = getattr(e.response, "status_code", None)
-                                    if status in [404,410]:
-                                        sub.delete()
                     await send_push_notifications()
 
                 #新しい部屋が作られたことをロビーにいる全員に通知
