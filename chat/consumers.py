@@ -233,6 +233,9 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                                 )
                             except WebPushException as e:
                                 logger.error(f"Push failed: {e}")
+                                status = getattr(e.response, "status__code", None)
+                                if status in [404,410]:
+                                    sub.delete()
                 await send_push_notifications()
 
                 #新しい部屋が作られたことをロビーにいる全員に通知
