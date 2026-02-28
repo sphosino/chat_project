@@ -208,7 +208,7 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                 #新しい部屋が作られたことを通知するプッシュ通知を送る
                 @database_sync_to_async
                 def send_push_notifications():
-                    users = CustomUser.objects.filter(notify_room_create=True)
+                    users = CustomUser.objects.filter(notify_room_create=True).exclude(id=self.user.id)
                     for user in users:
                         subs = PushSubscription.objects.filter(user=user)
                         for sub in subs:
@@ -228,7 +228,7 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                                     }),
                                     vapid_private_key=settings.VAPID_PRIVATE_KEY,
                                     vapid_claims={
-                                        "sub": "mailto:test@example.com"
+                                        "sub": "https://chat-project-red-waterfall-3034.fly.dev/"
                                     },
                                 )
                             except WebPushException as e:
