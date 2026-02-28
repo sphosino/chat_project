@@ -57,26 +57,26 @@ document.addEventListener("DOMContentLoaded", () => {
     async function registerPush() {
         try {
             if (!("serviceWorker" in navigator)) {
-                alert("SWなし");
+                console.log("SWなし");
                 return;
             }
             if (!("PushManager" in window)) {
-                alert("PushManagerなし");
+                console.log("PushManagerなし");
                 return;
             }
 
             const registration = await navigator.serviceWorker.ready;
-            alert("SW ready OK");
+            console.log("SW ready OK");
 
             const existingSub = await registration.pushManager.getSubscription();
-            alert("existingSub: " + (existingSub ? "YES" : "NO"));
+            console.log("existingSub: " + (existingSub ? "YES" : "NO"));
 
             const subscription = existingSub || await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(window.VAPID_PUBLIC_KEY)
             });
 
-            alert("subscribe OK");
+            console.log("subscribe OK");
 
             const res = await fetch("/chat/api/save-subscription/", {
                 method: "POST",
@@ -87,10 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(subscription)
             });
 
-            alert("save status: " + res.status);
+            console.log("save status: " + res.status);
 
         } catch (e) {
-            alert("ERROR: " + e.message);
+            console.log("ERROR: " + e.message);
         }
     }
 });
