@@ -5,9 +5,6 @@
     <meta name="csrf-token" content = "{{csrf_token}}">
     {% load static %}
     <link rel="stylesheet" href = "{% static 'chat/css/lobby.css' %}">
-    <script>
-        window.VAPID_PUBLIC_KEY = "{{ VAPID_PUBLIC_KEY }}";
-    </script>
     <script src="{% static 'chat/js/lobby.js' %}" type = "module"></script>
 {% endblock %}
 

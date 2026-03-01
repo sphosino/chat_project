@@ -8,7 +8,7 @@ from .forms import SignUpForm, LoginForm
 from django.views.decorators.cache import never_cache
 from django.contrib.staticfiles import finders
 import os
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from django.contrib.auth.decorators import login_required
 from accounts.models import PushSubscription

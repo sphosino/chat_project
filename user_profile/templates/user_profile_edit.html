@@ -2,9 +2,7 @@
 {% block header %}
 {% load static %}
     <meta name="csrf-token" content = "{{csrf_token}}">
-    <script>
-        window.VAPID_PUBLIC_KEY = "{{ VAPID_PUBLIC_KEY }}";
-    </script>
+    {{ VAPID_PUBLIC_KEY|json_script:"VAPID_PUBLIC_KEY" }}
 {% endblock %}
 {% block body %}
 <h1>{{ user.account_id }}</h1>
@@ -24,6 +22,7 @@
 {% endif %}
 
 <script>
+const VAPID_PUBLIC_KEY = JSON.parse(document.getElementById("VAPID_PUBLIC_KEY").textContent)
 document.addEventListener("DOMContentLoaded", () => {
     const checkbox = document.getElementById("id_notify_room_create");
     if (!checkbox) return;
@@ -71,14 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const existingSub = await registration.pushManager.getSubscription();
             console.log("existingSub: " + (existingSub ? "YES" : "NO"));
 
+            if(existingSub){
+                console.log("既にあるよ")
+                return;
+            }
+
             const subscription = existingSub || await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(window.VAPID_PUBLIC_KEY)
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
             });
 
             console.log("subscribe OK");
 
-            const res = await fetch("/chat/api/save-subscription/", {
+            const res = await fetch("/accounts/api/save-subscription/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

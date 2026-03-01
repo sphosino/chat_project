@@ -50,27 +50,3 @@ class RoomView(AsyncLoginRequiredMixin,View):
             result = await handle_chat_message(request, roomid)
             return JsonResponse(result)
         return JsonResponse({'success':False, 'errors': 'Unexpected request'})
-        
-
-#サービスワーカーからの購読情報を保存するためのビュー
-@login_required
-def save_subscription(request):
-    
-    if request.method == "POST":
-        data = json.loads(request.body)
-
-        endpoint = data.get("endpoint")
-        keys = data.get("keys", {})
-
-        PushSubscription.objects.update_or_create(
-            endpoint=endpoint,
-            defaults={
-                "user": request.user,
-                "p256dh": keys.get("p256dh"),
-                "auth": keys.get("auth"),
-            }
-        )
-        print("subscription saved:", endpoint)
-        return JsonResponse({"status": "ok"})
-
-    return JsonResponse({"error": "invalid"}, status=400)

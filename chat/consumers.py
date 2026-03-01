@@ -240,7 +240,10 @@ class LobbyConsumer(AsyncWebsocketConsumer,SendMethodMixin):
                                 logger.error(f"Push failed: {e}")
                                 status = getattr(e.response, "status_code", None)
                                 if status in [404,410]:
+                                    #410このエンドポイントはもう無効だから消していいよ
+                                    #404一時的に見つからないだけかもま、削除でええやろ
                                     sub.delete()
+
                 print(text_data_json['notify'])
                 if text_data_json['notify']:
                     await send_push_notifications()

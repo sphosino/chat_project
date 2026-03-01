@@ -26,10 +26,7 @@
 				document.querySelector("#real-delete-form").submit();
 			}
 		})
-
-		document.querySelector("#delete_button").onclick = function(e) {
-			document.querySelector("#delete-user-modal").showModal();
-		};
+		document.querySelector("#delete_button").onclick = modal.showModal();
 	</script>
 {% else %}
 	<h1>無効なページ</h1>
