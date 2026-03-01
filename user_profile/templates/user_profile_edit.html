@@ -1,10 +1,9 @@
 {% extends "base.html" %}
-{% block header %}
-{% load static %}
-    <meta name="csrf-token" content = "{{csrf_token}}">
+    {% block header %}
+    {% load static %}
     {{ VAPID_PUBLIC_KEY|json_script:"VAPID_PUBLIC_KEY" }}
-{% endblock %}
-{% block body %}
+    {% endblock %}
+    {% block body %}
 <h1>{{ user.account_id }}</h1>
 <h2>
 </h2>
@@ -21,82 +20,26 @@
     <p>このプロフィールは編集できません。</p>
 {% endif %}
 
-<script>
-const VAPID_PUBLIC_KEY = JSON.parse(document.getElementById("VAPID_PUBLIC_KEY").textContent)
-document.addEventListener("DOMContentLoaded", () => {
-    const checkbox = document.getElementById("id_notify_room_create");
-    if (!checkbox) return;
+<script type="module">
+    import { registerPush } from "{% static 'subscription.js' %}"
+    const VAPID_PUBLIC_KEY = JSON.parse(document.getElementById("VAPID_PUBLIC_KEY").textContent)
+    document.addEventListener("DOMContentLoaded", () => {
+        const checkbox = document.getElementById("id_notify_room_create");
+        if (!checkbox) return;
 
-    checkbox.addEventListener("change", async () => {
+        checkbox.addEventListener("change", async () => {
 
-        if (!checkbox.checked) return;
+            if (!checkbox.checked) return;
 
-        if (Notification.permission === "default") {
-            const result = await Notification.requestPermission();
-            if (result !== "granted") {
-                checkbox.checked = false;
-                return;
+            if (Notification.permission === "default") {
+                const result = await Notification.requestPermission();
+                if (result !== "granted") {
+                    checkbox.checked = false;
+                    return;
+                }
             }
-        }
-        await registerPush();
+            await registerPush(VAPID_PUBLIC_KEY);
+        });
     });
-
-
-    function getCSRFToken() {
-        return document.querySelector('meta[name="csrf-token"]').content;
-    }
-    function urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding)
-            .replace(/-/g, '+')
-            .replace(/_/g, '/');
-        const rawData = window.atob(base64);
-        return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
-    }
-    async function registerPush() {
-        try {
-            if (!("serviceWorker" in navigator)) {
-                console.log("SWなし");
-                return;
-            }
-            if (!("PushManager" in window)) {
-                console.log("PushManagerなし");
-                return;
-            }
-
-            const registration = await navigator.serviceWorker.ready;
-            console.log("SW ready OK");
-
-            const existingSub = await registration.pushManager.getSubscription();
-            console.log("existingSub: " + (existingSub ? "YES" : "NO"));
-
-            if(existingSub){
-                console.log("既にあるよ")
-                return;
-            }
-
-            const subscription = existingSub || await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-            });
-
-            console.log("subscribe OK");
-
-            const res = await fetch("/accounts/api/save-subscription/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCSRFToken()
-                },
-                body: JSON.stringify(subscription)
-            });
-
-            console.log("save status: " + res.status);
-
-        } catch (e) {
-            console.log("ERROR: " + e.message);
-        }
-    }
-});
 </script>
 {% endblock %}

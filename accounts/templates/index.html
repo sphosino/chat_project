@@ -1,7 +1,16 @@
 {% extends "base.html" %}
-
+	{% block header %}
+    {% load static %}
+    {{ VAPID_PUBLIC_KEY|json_script:"VAPID_PUBLIC_KEY" }}
+    <script type="module">
+        import { registerPush } from "{% static 'subscription.js' %}";
+        const VAPID_PUBLIC_KEY = JSON.parse(document.getElementById("VAPID_PUBLIC_KEY").textContent)
+        registerPush(VAPID_PUBLIC_KEY);
+    </script>
+	{% endblock %}
 {% block body %}
 {% if user.is_authenticated %}
+
 <h2>Welcome {{ user.account_id }}</h2>
 <hr>
 <a href="{% url 'chat:lobby' %}">ロビーに行く</a>
